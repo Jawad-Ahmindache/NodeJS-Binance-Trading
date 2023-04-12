@@ -1,0 +1,13 @@
+{
+    "name": "bot_jawad_zak",
+    "version": "1.0.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "nodemon --ignore ./fichiers/ --legacy-watch server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "mysql2": "^3.0.1",
+        "websocket": "^1.0.34"
+    }
+}

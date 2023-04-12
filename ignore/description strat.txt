@@ -1,0 +1,22 @@
+paire de réf = USDT
+(X) = étape
+Stratégie : ACHAT(1) - ACHAT(2) - VENTE(3)
+On récupère les combinaisons de paires possibles
+
+(Certaines paires peuvent exister de façon inverse du genre ETHBTC et non BTCETH quand on parcours les infos de l'exchange il faut inclure ça dans le if)
+
+
+ACHAT (1)  : On check toutes les combinaisons de chaques paires à USDT qui ont le trade d'activé ETH-USDT etc
+ACHAT (2)  : On check toutes les combinaisons entre les paires sauf la paire de base
+VENTE (3)  : Vu qu'ont on a déjà les combinaisons possibles en USDT à l'étape 1 il suffit juste de faire COIN_ACHAT(2)USDT ou USDTCOIN_ACHAT(2)
+
+On récupère les chemin possible pour la stratégie ACHAT - ACHAT - VENTE
+
+OBSERVATION : Je pense que l'api ne nous permettera pas de pouvoir check tous les chemin possible il faut donc prendre en compte les limites de l'api en gros je pense donc que pour la phase de test on va uniquement limiter les chemin et faire des chemins fixe pour voir si la stratégie fonctionne. Si elle fonctionne ensuite on pourra faire un système de ratio pour créer des chemins dynamiques (j'ai déjà réfléchi à ça)
+
+Imaginons qu'on ai le chemin BTCUSDT - BTCETH - ETHUSDT 
+Ensuite on ouvre des streams websocket pour nos chemin des ordres en ASKS - ASKS - BIDS
+Ensuite on calcule en continu ces chemin avec l'algo se trouvant dans mise_en_place.txt et dès qu'on trouve un gain qui atteint le gain minimum on parcours le chemin réellement.
+
+
+PS : Plus tard on pourra rajouter les informations détaillés de chaques étapes de chaques trajets effectués pour pouvoir faire des graphiques sur nos résultats et leurs évolutions dans le temps avec une interface graphique

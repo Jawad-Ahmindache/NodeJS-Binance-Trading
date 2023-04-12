@@ -1,0 +1,57 @@
+version: "1.0"  # optional since v1.27.0
+services:
+    nodejs:
+        image: jahmindache/nodejs-start2-triangulaire-market
+        working_dir: /var/nodejs/app
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./volumes/app/:/var/nodejs/app # Charger l'app node
+            - ./volumes/log/nodejs/:/var/nodejs/log #Log nodejs
+            - ./volumes/config/ssl/:/etc/ssl_cert #certificat ssl
+        entrypoint: "npm start"
+
+        tty: true
+        environment:
+            
+            - NODE_ENV=production
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+            - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+        depends_on:
+            - mariadb
+      
+  
+    mariadb:
+        image: mariadb:latest
+        restart: unless-stopped
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+            - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+        volumes:
+            - ./volumes/database/:/var/lib/mysql # Liste toute nos base de donnée
+            - ./volumes/config/sql/mariadb.cnf:/etc/mysql/mariadb.cnf # mariadb.cnf
+            - ./volumes/config/sql/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf # 50-server.cnf
+            - ./volumes/config/ssl/:/etc/ssl_cert #certificat ssl
+
+
+        ports:
+          - "3306:3306"
+
+
+
+    # phpMyAdmin Service
+    phpmyadmin:
+        image: jahmindache/phpmyadminssl
+        volumes:
+            - ./volumes/config/ssl/:/etc/ssl_cert #certificat ssl
+            - ./volumes/config/phpmyadmin/000default.conf:/etc/apache2/sites-available/000-default.conf #conf apache phpmyadmin
+            - ./volumes/config/php/php.ini:/usr/local/etc/php/php.ini #php.ini
+        ports:
+            - 8080:80
+            - 8443:443
+        environment:
+            PMA_HOST: mariadb
+            UPLOAD_LIMIT: 2048M
+        depends_on:
+            - mariadb
